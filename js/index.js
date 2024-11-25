@@ -72,7 +72,7 @@ function start() {
 start()
 
 function setupSound() {
-	backgroundSound = new Audio('/assets/sound/background-sound.mp3')
+	backgroundSound = new Audio('./assets/sound/background-sound.mp3')
 	backgroundSound.addEventListener('loadedmetadata', () => {
 		backgroundSound.loop = true
 		document.addEventListener('keydown', () => {
@@ -369,7 +369,7 @@ function setBallPosition() {
 }
 
 function reproducePointSound() {
-	const pointSound = new Audio('/assets/sound/point-sound.mp3')
+	const pointSound = new Audio('./assets/sound/point-sound.mp3')
 	pointSound.volume = .5
 	pointSound.play()
 	pointSound.addEventListener('ended', () => {
@@ -378,7 +378,7 @@ function reproducePointSound() {
 }
 
 function reproduceCollisionSound() {
-	const collisionSound = new Audio('/assets/sound/collision-sound.mp3')
+	const collisionSound = new Audio('./assets/sound/collision-sound.mp3')
 	collisionSound.volume = .5
 	collisionSound.play()
 	collisionSound.addEventListener('ended', () => {

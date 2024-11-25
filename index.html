@@ -34,7 +34,7 @@
 				width: 100%;
 				height: 100%;
 				background-color: #111;
-				background-image: url("/assets/image/background.svg");
+				background-image: url("./assets/image/background.svg");
 				background-size: 10vw;
 				position: relative;
 			}
@@ -78,6 +78,18 @@
 				padding-right: 0;
 				padding-left: 10px;
 			}
+
+			a {
+				color: #FFF;
+				text-decoration: none;
+				font-size: 16px;
+				font-weight: 700;
+				font-family: sans-serif;
+				position: absolute;
+				bottom: 25px;
+				left: 25px;
+				z-index: 999;
+			}
 		</style>
 	</head>
 	<body>
@@ -85,6 +97,7 @@
 		<canvas></canvas>
 		<span id='player1-points'>0</span>
 		<span id='player2-points'>0</span>
-		<script type='module' src='/js/index.js'></script>
+		<a href='./with-bot/index.html'>Juega con un bot</a>
+		<script src='./js/index.js'></script>
 	</body>
 </html>
