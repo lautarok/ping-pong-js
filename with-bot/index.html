@@ -177,6 +177,7 @@
 			document.addEventListener('DOMContentLoaded', () => {
 				if (isMobile()) {
 					document.querySelector('#error-message').style.display = 'flex'
+					document.querySelector('#press-key').remove()
 					return
 				}
 				document.addEventListener('keydown', removePressKeyDialog)
