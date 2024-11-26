@@ -353,12 +353,14 @@ function setBallPosition() {
 	if (ball.x <= 0) {
 		player[1].points++
 		shoots = 0
+		ball.x = 0
 		ball.accelerationX = canvas.width / 220
 		reproducePointSound()
 		document.querySelector('#player2-points').innerText = player[1].points
 	} else if (ball.x >= canvas.width - ball.size) {
 		player[0].points++
 		shoots = 0
+		ball.x = canvas.width - ball.size
 		ball.accelerationX = -(canvas.width / 220)
 		reproducePointSound()
 		document.querySelector('#player1-points').innerText = player[0].points
