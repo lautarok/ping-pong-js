@@ -1,7 +1,6 @@
 const refreshIn = 10
 
-let trick = false,
-	engineStatus = false
+let engineStatus = false
 
 /** @type {HTMLAudioElement | undefined} */
 let backgroundSound
@@ -21,8 +20,8 @@ let playerColorTimer = [undefined, undefined]
 let shoots = 0
 
 let player = [
-	{y: 0, points: 0, size: {w: 0, h: 15}, color: '#FFF'},
-	{y: 0, points: 0, size: {w: 0, h: 15}, color: '#FFF'}
+	{y: 0, points: 0, size: {w: 0, h: 20}, color: '#FFF'},
+	{y: 0, points: 0, size: {w: 0, h: 20}, color: '#FFF'}
 ]
 
 let activeKeys = [
@@ -39,17 +38,11 @@ let activeKeys = [
 const controls = [
 	{
 		up: 'w',
-		down: 's',
-		trick: 'e',
-		trick2: 'q',
-		trick3: 'z'
+		down: 's'
 	},
 	{
 		up: 'ArrowUp',
-		down: 'ArrowDown',
-		trick: 'ArrowLeft',
-		trick2: 'ArrowRight',
-		trick3: 'Shift'
+		down: 'ArrowDown'
 	}
 ]
 
@@ -114,56 +107,6 @@ function listenKeys() {
 				break
 			case controls[1].down:
 				activeKeys[1].down = true
-				break
-			case controls[0].trick:
-				if (!trick) {
-					const originalSizeH = player[1].size.h
-					player[1].size.h = 0
-					trick = true
-					setTimeout(() => {
-						player[1].size.h = originalSizeH
-						trick = false
-					}, 3000)
-				}
-				break
-			case controls[1].trick:
-				if (!trick) {
-					const originalSizeH = player[0].size.h
-					player[0].size.h = 0
-					trick = true
-					setTimeout(() => {
-						player[0].size.h = originalSizeH
-						trick = false
-					}, 3000)
-				}
-				break
-			case controls[0].trick2:
-				player[0].y = ball.y - (player[0].size.h / 2) + (ball.size / 2)
-				break
-			case controls[1].trick2:
-				player[1].y = ball.y - (player[1].size.h / 2) + (ball.size / 2)
-				break
-			case controls[1].trick3:
-				if (!trick) {
-					const originalSizeH = player[1].size.h
-					player[1].size.h = canvas.height / 2
-					trick = true
-					setTimeout(() => {
-						player[1].size.h = originalSizeH
-						trick = false
-					}, 3000)
-				}
-				break
-			case controls[0].trick3:
-				if (!trick) {
-					const originalSizeH = player[1].size.h
-					player[0].size.h = canvas.height / 2
-					trick = true
-					setTimeout(() => {
-						player[0].size.h = originalSizeH
-						trick = false
-					}, 3000)
-				}
 				break
 		}
 	})
@@ -263,9 +206,9 @@ function drawPlayer(index) {
 
 function setPlayerPosition(index) {
 	if (activeKeys[index].up && player[index].y > 0) {
-		player[index].y -= canvas.height / 130
+		player[index].y -= canvas.height / 80
 	} else if (activeKeys[index].down && player[index].y + player[index].size.h < canvas.height) {
-		player[index].y += canvas.height / 130
+		player[index].y += canvas.height / 80
 	}
 }
 
@@ -322,14 +265,22 @@ function setBallPosition() {
 		)
 	) {
 		shoots++
-		reproduceCollisionSound()
 		if (ball.accelerationX > 0) {
 			player[1].color = '#F55'
 			ball.x = canvas.width - (player[1].size.w * 2) - ball.size
-			if (shoots > 20) {
-				ball.accelerationX = -(canvas.width / 35)
-			} else if (shoots > 9) {
-				ball.accelerationX = -(canvas.width / 80)
+			if (activeKeys[1].down && player[1].y + player[1].size.h < canvas.height) {
+				ball.accelerationY = (ball.accelerationX / 2) * (Math.random() + 1)
+				reproduceCollisionEffectSound()
+			} else if (activeKeys[1].up && player[1].y > 0) {
+				ball.accelerationY = -((ball.accelerationX / 2) * (Math.random() + 1))
+				reproduceCollisionEffectSound()
+			} else {
+				reproduceCollisionSound()
+			}
+			if (shoots > 40) {
+				ball.accelerationX = -(canvas.width / 75)
+			} else if (shoots > 20) {
+				ball.accelerationX = -(canvas.width / 90)
 			} else if (shoots > 5) {
 				ball.accelerationX = -(canvas.width / 150)
 			} else if (shoots > 1) {
@@ -338,10 +289,19 @@ function setBallPosition() {
 		} else if (ball.accelerationX < 0) {
 			player[0].color = '#55F'
 			ball.x = player[0].size.w * 2
-			if (shoots > 20) {
-				ball.accelerationX = canvas.width / 35
-			} else if (shoots > 9) {
-				ball.accelerationX = canvas.width / 80
+			if (activeKeys[0].down && player[0].y + player[0].size.h < canvas.height) {
+				ball.accelerationY = -((ball.accelerationX / 2) * (Math.random() + 1))
+				reproduceCollisionEffectSound()
+			} else if (activeKeys[0].up && player[0].y > 0) {
+				ball.accelerationY = (ball.accelerationX / 2) * (Math.random() + 1)
+				reproduceCollisionEffectSound()
+			} else {
+				reproduceCollisionSound()
+			}
+			if (shoots > 40) {
+				ball.accelerationX = canvas.width / 75
+			} else if (shoots > 20) {
+				ball.accelerationX = canvas.width / 90
 			} else if (shoots > 5) {
 				ball.accelerationX = canvas.width / 150
 			} else if (shoots > 1) {
@@ -354,14 +314,16 @@ function setBallPosition() {
 		player[1].points++
 		shoots = 0
 		ball.x = 0
-		ball.accelerationX = canvas.width / 220
+		ball.accelerationX = canvas.width / 500
+		ball.accelerationY = ball.accelerationY > 0 ? canvas.width / 500 : -(canvas.width / 500)
 		reproducePointSound()
 		document.querySelector('#player2-points').innerText = player[1].points
 	} else if (ball.x >= canvas.width - ball.size) {
+		ball.x = canvas.width - ball.size
 		player[0].points++
 		shoots = 0
-		ball.x = canvas.width - ball.size
-		ball.accelerationX = -(canvas.width / 220)
+		ball.accelerationX = -(canvas.width / 500)
+		ball.accelerationY = ball.accelerationY > 0 ? canvas.width / 500 : -(canvas.width / 500)
 		reproducePointSound()
 		document.querySelector('#player1-points').innerText = player[0].points
 	}
@@ -375,7 +337,7 @@ function reproducePointSound() {
 	pointSound.volume = .5
 	pointSound.play()
 	pointSound.addEventListener('ended', () => {
-		pointSound.currentTime = 0
+		delete pointSound
 	})
 }
 
@@ -384,6 +346,15 @@ function reproduceCollisionSound() {
 	collisionSound.volume = .5
 	collisionSound.play()
 	collisionSound.addEventListener('ended', () => {
-		collisionSound.currentTime = 0
+		delete collisionSound
+	})
+}
+
+function reproduceCollisionEffectSound() {
+	const collisionEffectSound = new Audio('./assets/sound/collision-effect-sound.wav')
+	collisionEffectSound.volume = .5
+	collisionEffectSound.play()
+	collisionEffectSound.addEventListener('ended', () => {
+		delete collisionEffectSound
 	})
 }
