@@ -178,19 +178,19 @@ function startEngine() {
 	})
 }
 
-/** @type {(cancelPosition?: boolean) => boolean} */
-function draw(cancelPosition) {
+/** @type {(cancelBall?: boolean) => boolean} */
+function draw(cancelBall) {
 	ctx.beginPath()
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	ctx.fillStyle = '#FFF'
-	if (!cancelPosition) {
+	if (!cancelBall) {
 		setPlayerPosition(0)
 		setBotPosition(1)
 	}
 	if (!drawPlayer(0) || !drawPlayer(1)) {
 		return false
 	}
-	drawBall(cancelPosition)
+	if (!cancelBall) drawBall()
 	return true
 }
 
@@ -246,9 +246,9 @@ function setBotPosition(index) {
 	player[index].y = ball.y - (player[index].size.h / 2) + (ball.size / 2)
 }
 
-/** @type {(cancelPosition?: boolean) => boolean} */
-function drawBall(cancelPosition) {
-	if (!cancelPosition) setBallPosition()
+/** @type {() => boolean} */
+function drawBall() {
+	setBallPosition()
 
 	ctx.fillStyle = shoots > 20 ? '#f44336'
 		: shoots > 9 ? '#673ab7'
